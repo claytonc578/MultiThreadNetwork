@@ -1,20 +1,20 @@
 #Flags
-CFLAG := -Wall -Werror -g -pthread -lsocket -lnsl
+CFLAG := -Wall -g -pthread
 Q := @
 CC := g++
-#TARGET := server
-# OBJ := server.o client.o
+TARGET := main
+OBJ := server.o client.o
 
-# all: $(TARGET)
+all: $(TARGET)
 
-server: server.cpp
+server.o: server.cpp server.hpp
 	$(CC) $(CFLAG) -c server.cpp
 
-client: client.cpp
+client.o: client.cpp client.hpp
 	$(CC) $(CFLAG) -c client.cpp
 
-# $(TARGET): $(OBJ) $(TARGET).cpp
-# 	$(CC) $(CFLAG) -o $(TARGET) $(TARGET).cpp $(OBJ)
+$(TARGET): $(OBJ) $(TARGET).cpp
+	$(CC) $(CFLAG) -o $(TARGET) $(TARGET).cpp $(OBJ)
 
-# clean:
-	# rm -f $(TARGET) $(OBJ)
+clean:
+	rm -f $(TARGET) $(OBJ)
