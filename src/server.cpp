@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <string.h>
 #include <iostream>
 
@@ -20,7 +21,6 @@ Server::Server()
 
 void Server::initSocket()
 {
-  cout << "Server creating socket" << endl;
   /*
   * domain: AF_INET: IPv4 protocol
   * type: SOCK_STREAM: TCP
@@ -31,8 +31,8 @@ void Server::initSocket()
     perror("Server create socket failed");
     exit(EXIT_FAILURE);
   }//create socket
+  cout << "Server created socket" << endl;
 
-  cout << "Setting socket options" << endl;
   /*
   * sockfd:
   * level: SOL_SOCKET, manipulate options at socket API level
@@ -44,27 +44,30 @@ void Server::initSocket()
     perror("server setsockopt");
     exit(EXIT_FAILURE);
   }//attach socket to port 4040
+  cout << "Server set socket options completed" << endl;
+
 
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_port = htons(PORT);
 
-  cout << "address: " << address.sin_addr.s_addr << endl;
+  char * print_addr = inet_ntoa(address.sin_addr);
+  cout << "Server address: " << print_addr << endl;
 
 
-  cout << "Server binding to port" << endl;
 
   /*
   * sockfd
   * addr:
   * addr_len: length of address
   */
-  if (bind(server_fd, (struct sockaddr *)&address, addr_len) < 0){
+  if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0){
     perror("server bind failure");
     exit(EXIT_FAILURE);
   }
+  cout << "Server binded to port" << endl;
 
-  cout << "Server listening start" << endl;
+
   /*
   * sockfd
   * backlog: max num of queue of pending connections
@@ -73,6 +76,7 @@ void Server::initSocket()
     perror("server listen failure");
     exit(EXIT_FAILURE);
   }
+  cout << "Server listening" << endl;
 
 }//initSocket
 
@@ -80,6 +84,7 @@ void Server::initSocket()
 int Server::acceptConnection()
 {
   int new_socket;
+  int addr_len = sizeof(address);
 
   cout << "Server accepting connection" << endl;
 

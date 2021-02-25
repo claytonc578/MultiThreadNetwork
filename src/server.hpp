@@ -20,7 +20,6 @@ private:
   int server_fd;
   int opt = 1; //option value
   struct sockaddr_in address;
-  int addr_len = sizeof(address);
 
 };
 

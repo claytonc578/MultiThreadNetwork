@@ -15,7 +15,7 @@ using namespace std;
 Client::Client()
 {
   sock = -1;
-  address = "";
+  address = "0.0.0.0";
 }//constructor
 
 
@@ -33,11 +33,11 @@ int Client::initClient()
   serv_addr.sin_port = htons(PORT);
 
   //-------------------------Convert Address--------------------------------------
-  cout << "Client converting address" << endl;
   if (inet_pton(AF_INET, address, &serv_addr.sin_addr) <= 0){
     cout << "Client invalid address/ address not supported" << endl;
     return ERROR;
   }
+  cout << "Client convert address completed" << endl;
 
   //-------------------------Connect to Server--------------------------------------
   if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
