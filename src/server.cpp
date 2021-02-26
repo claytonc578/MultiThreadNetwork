@@ -1,13 +1,3 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string.h>
-#include <iostream>
-
 #include "server.hpp"
 
 using namespace std;
@@ -51,10 +41,8 @@ void Server::initSocket()
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_port = htons(PORT);
 
-  char * print_addr = inet_ntoa(address.sin_addr);
-  cout << "Server address: " << print_addr << endl;
-
-
+  // char * print_addr = inet_ntoa(address.sin_addr);
+  // cout << "Server address: " << print_addr << endl;
 
   /*
   * sockfd
@@ -86,7 +74,7 @@ int Server::acceptConnection()
   int new_socket;
   int addr_len = sizeof(address);
 
-  cout << "Server accepting connection" << endl;
+  // cout << "Server accepting connection" << endl;
 
   /*
   * sockfd
@@ -102,6 +90,30 @@ int Server::acceptConnection()
   cout << "Server accepting connection complete" << endl;
   return new_socket;
 }//acceptConnection
+
+
+void Server::readSocket(int new_socket)
+{
+  char buffer[MAX_BUFFER_SIZE];
+  int read_val;
+
+  read_val = read(new_socket, buffer, MAX_BUFFER_SIZE);
+  cout << "Server read buffer: " << buffer << endl;
+}
+
+int Server::writeSocket(int new_socket, string data)
+{
+  cout << "Server sending data..." << endl;
+  // cout << data << endl;
+
+  if (send(new_socket, data.c_str(), strlen(data.c_str()), 0) < 0){
+    cout << "Send failed" << endl;
+    return ERROR;
+  }
+
+  cout << "Server data send success" << endl;
+  return SUCCESS;
+}
 
 
 
