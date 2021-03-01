@@ -24,7 +24,7 @@ class Client
 public:
   Client();
   int initClient();
-  int sendData(string data);
+  int writeSocket(string data);
   void readSocket();
 private:
   int sock;

@@ -14,13 +14,13 @@ int main(int argc, char const *argv[])
 {
   Server server;
   Client client;
-  int new_socket;
-  pid_t pid;
+  int *new_socket;
 
 
   server.initSocket();
   client.initClient();
-  new_socket = server.acceptConnection();
+  // server.acceptConnection(new_socket);
+  server.runThread(new_socket);
 
   // pid = fork();
   // if (pid < 0){
@@ -35,7 +35,7 @@ int main(int argc, char const *argv[])
   //   close(new_socket);
   // }
 
-  client.sendData("Hello from client");
+  client.writeSocket("Hello from client");
   server.readSocket(new_socket);
   server.writeSocket(new_socket, "Server received message");
   client.readSocket();

@@ -36,13 +36,13 @@ int Client::initClient()
     cout << "Client connection failed. ERROR" << endl;
     return ERROR;
   }
-  cout << "Client connected to Server address" << endl;
+  cout << "Client connected to Server address\n\n";
 
   return 0;
 }//initClient
 
 
-int Client::sendData(string data)
+int Client::writeSocket(string data)
 {
   cout << "Client sending data..." << endl;
   // cout << data << endl;
@@ -60,6 +60,7 @@ void Client::readSocket()
   char buffer[MAX_BUFFER_SIZE];
   int read_val;
 
+  bzero(buffer, sizeof(buffer));
   read_val = read(sock, buffer, MAX_BUFFER_SIZE);
   cout << "Client read buffer: " << buffer << endl;
 }

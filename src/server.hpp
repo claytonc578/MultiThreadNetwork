@@ -9,7 +9,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <string>
 #include <iostream>
+#include <thread>
 
 using namespace std;
 
@@ -25,9 +27,11 @@ class Server
 public:
   Server();
   void initSocket();
-  int acceptConnection();
-  void readSocket(int new_socket);
-  int writeSocket(int new_socket, string data);
+  void acceptConnection(int *new_socket);
+  void readSocket(int *new_socket);
+  int writeSocket(int *new_socket, string data);
+  void runThread(int *new_socket);
+
 private:
   int server_fd;
   int opt = 1; //option value

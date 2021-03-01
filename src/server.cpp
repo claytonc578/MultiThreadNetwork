@@ -3,11 +3,11 @@
 using namespace std;
 
 
-
 Server::Server()
 {
 
 }//constructor
+
 
 void Server::initSocket()
 {
@@ -34,7 +34,7 @@ void Server::initSocket()
     perror("server setsockopt");
     exit(EXIT_FAILURE);
   }//attach socket to port 4040
-  cout << "Server set socket options completed" << endl;
+  // cout << "Server set socket options completed" << endl;
 
 
   address.sin_family = AF_INET;
@@ -64,14 +64,14 @@ void Server::initSocket()
     perror("server listen failure");
     exit(EXIT_FAILURE);
   }
-  cout << "Server listening" << endl;
+  cout << "Server listening\n\n";
 
 }//initSocket
 
 
-int Server::acceptConnection()
+void Server::acceptConnection(int *new_socket)
 {
-  int new_socket;
+  // int new_socket;
   int addr_len = sizeof(address);
 
   // cout << "Server accepting connection" << endl;
@@ -81,32 +81,34 @@ int Server::acceptConnection()
   * addr
   * addrlen
   */
-  new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addr_len);
+  *new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addr_len);
   if (new_socket < 0){
     perror("server accept failure");
     exit(EXIT_FAILURE);
   }
 
   cout << "Server accepting connection complete" << endl;
-  return new_socket;
+  // return new_socket;
 }//acceptConnection
 
 
-void Server::readSocket(int new_socket)
+void Server::readSocket(int *new_socket)
 {
   char buffer[MAX_BUFFER_SIZE];
   int read_val;
 
-  read_val = read(new_socket, buffer, MAX_BUFFER_SIZE);
+  bzero(buffer, sizeof(buffer));
+  read_val = read(*new_socket, buffer, MAX_BUFFER_SIZE);
   cout << "Server read buffer: " << buffer << endl;
 }
 
-int Server::writeSocket(int new_socket, string data)
+
+int Server::writeSocket(int *new_socket, string data)
 {
   cout << "Server sending data..." << endl;
   // cout << data << endl;
 
-  if (send(new_socket, data.c_str(), strlen(data.c_str()), 0) < 0){
+  if (send(*new_socket, data.c_str(), strlen(data.c_str()), 0) < 0){
     cout << "Send failed" << endl;
     return ERROR;
   }
@@ -115,6 +117,12 @@ int Server::writeSocket(int new_socket, string data)
   return SUCCESS;
 }
 
+
+void Server::runThread(int *new_socket)
+{
+  thread t1(&Server::acceptConnection, this, new_socket);
+  t1.join();
+}
 
 
 // int main(int argc, char const *argv[])
