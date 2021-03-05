@@ -25,17 +25,20 @@ using namespace std;
 class Server
 {
 public:
-  Server();
-  void initSocket();
-  void acceptConnection(int *new_socket);
-  void readSocket(int *new_socket);
-  int writeSocket(int *new_socket, string data);
-  void runThread(int *new_socket);
+Server();
+~Server();
+void initSocket();
+void acceptConnection(int *new_socket);
+void readSocket(int *new_socket);
+int writeSocket(int *new_socket, string data);
+void runConnectThread(int *new_socket);
+void runSocketThread(int *new_socket);
 
 private:
-  int server_fd;
-  int opt = 1; //option value
-  struct sockaddr_in address;
+int server_fd;
+int opt = 1; //option value
+struct sockaddr_in address;
+thread connect_thread;
 
 };
 

@@ -22,14 +22,15 @@ using namespace std;
 class Client
 {
 public:
-  Client();
-  int initClient();
-  int writeSocket(string data);
-  void readSocket();
+Client();
+int initClient();
+int writeSocket(string data);
+void readSocket();
+
 private:
-  int sock;
-  const char *address;
-  struct sockaddr_in serv_addr;
+int sock;
+const char *address;
+struct sockaddr_in serv_addr;
 
 };
 
