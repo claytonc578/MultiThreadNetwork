@@ -70,36 +70,55 @@ void Server::initSocket()
 }//initSocket
 
 
-void Server::acceptConnection(int *new_socket)
+void Server::acceptConnection()
 {
-    // int new_socket;
     int addr_len = sizeof(address);
 
     // cout << "Server accepting connection" << endl;
+    while (numThread < MAX_NUM_THREADS){
+        /*
+        * sockfd
+        * addr
+        * addrlen
+        */
+        // cout << "In while loop" << endl;
 
-    /*
-    * sockfd
-    * addr
-    * addrlen
-    */
-    *new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addr_len);
-    if (new_socket < 0){
-        perror("server accept failure");
-        exit(EXIT_FAILURE);
+        connect_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addr_len);
+        // cout << "called accept" << endl;
+
+        if (connect_fd < 0){
+            perror("server accept failure");
+            exit(EXIT_FAILURE);
+        }
+
+        cout << "Server accepting connection complete" << endl;
+
+        threads.push_back(thread(&Server::readSocket, this)); //create thread
+
+        // cout << "Called thread readSocket\n";
+
+        mtx.lock();
+        numThread++;
+        mtx.unlock();
     }
 
-    cout << "Server accepting connection complete" << endl;
-    // return new_socket;
+    for (int i = 0; i < MAX_NUM_THREADS; i++){
+        threads[i].join();
+    }
+
 }//acceptConnection
 
 
-void Server::readSocket(int *new_socket)
+void Server::readSocket()
 {
     char buffer[MAX_BUFFER_SIZE];
-    int read_val;
+    // int read_val;
+    mtx.lock();
+    cout << "Server numThread: " << numThread << endl;
+    mtx.unlock();
 
     bzero(buffer, sizeof(buffer));
-    read_val = read(*new_socket, buffer, MAX_BUFFER_SIZE);
+    read(connect_fd, buffer, MAX_BUFFER_SIZE);
     cout << "Server read buffer: " << buffer << endl;
 }
 
@@ -107,7 +126,6 @@ void Server::readSocket(int *new_socket)
 int Server::writeSocket(int *new_socket, string data)
 {
     cout << "Server sending data..." << endl;
-    // cout << data << endl;
 
     if (send(*new_socket, data.c_str(), strlen(data.c_str()), 0) < 0){
         cout << "Send failed" << endl;
@@ -119,19 +137,22 @@ int Server::writeSocket(int *new_socket, string data)
 }
 
 
-void Server::runConnectThread(int *new_socket)
-{
-    connect_thread = thread(&Server::acceptConnection, this, new_socket);
-}
+// void Server::runConnectThread(int *new_socket)
+// {
+//     while (1){
+//         connect_thread = thread(&Server::acceptConnection, this, new_socket);
+//
+//     }
+// }
 
 
-void Server::runSocketThread(int *new_socket)
-{
-    thread socket_thread(&Server::readSocket, this, new_socket);
-    thread writeSock_thread(&Server::writeSocket, this, new_socket, "Server received\n");
-    socket_thread.join();
-    writeSock_thread.join();
-}
+// void Server::runSocketThread(int *new_socket)
+// {
+//     thread socket_thread(&Server::readSocket, this, new_socket);
+//     thread writeSock_thread(&Server::writeSocket, this, new_socket, "Server received\n");
+//     socket_thread.join();
+//     writeSock_thread.join();
+// }
 
 // void Server::runServer()
 // {
