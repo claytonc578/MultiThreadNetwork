@@ -23,7 +23,7 @@ using namespace std;
 #define MAX_BUFFER_SIZE 1024
 #define ERROR -1
 #define SUCCESS 0
-#define MAX_NUM_THREADS 3
+#define MAX_NUM_THREADS 2
 
 
 class Server

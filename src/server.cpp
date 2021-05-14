@@ -91,21 +91,19 @@ void Server::acceptConnection()
             exit(EXIT_FAILURE);
         }
 
-        cout << "Server accepting connection complete" << endl;
+        cout << "\nServer accepting connection complete" << endl;
 
         threads.push_back(thread(&Server::readSocket, this)); //create thread
-
-        // cout << "Called thread readSocket\n";
-
+        
         mtx.lock();
         numThread++;
+        cout << "Server numThread: " << numThread << endl;
         mtx.unlock();
     }
 
-    for (int i = 0; i < MAX_NUM_THREADS; i++){
+    for (unsigned int i = 0; i < threads.size(); i++){
         threads[i].join();
     }
-
 }//acceptConnection
 
 
@@ -113,9 +111,9 @@ void Server::readSocket()
 {
     char buffer[MAX_BUFFER_SIZE];
     // int read_val;
-    mtx.lock();
-    cout << "Server numThread: " << numThread << endl;
-    mtx.unlock();
+    // mtx.lock();
+    // cout << "Server numThread: " << numThread << endl;
+    // mtx.unlock();
 
     bzero(buffer, sizeof(buffer));
     read(connect_fd, buffer, MAX_BUFFER_SIZE);

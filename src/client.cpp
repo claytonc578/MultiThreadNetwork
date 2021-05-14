@@ -44,7 +44,7 @@ int Client::initClient()
 
 int Client::writeSocket(string data)
 {
-    cout << "Client sending data..." << endl;
+    cout << "\nClient sending data..." << endl;
     // cout << data << endl;
 
     if (send(sock, data.c_str(), strlen(data.c_str()), 0) < 0){
@@ -58,9 +58,8 @@ int Client::writeSocket(string data)
 void Client::readSocket()
 {
     char buffer[MAX_BUFFER_SIZE];
-    int read_val;
 
     bzero(buffer, sizeof(buffer));
-    read_val = read(sock, buffer, MAX_BUFFER_SIZE);
+    read(sock, buffer, MAX_BUFFER_SIZE);
     cout << "Client read buffer: " << buffer << endl;
 }
